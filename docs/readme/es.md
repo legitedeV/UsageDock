@@ -14,14 +14,14 @@
 
 <p align="center"><a href="https://github.com/legitedeV/UsageDock/releases/latest"><strong>Descargar para Windows</strong></a> · <a href="../../CONTRIBUTING.md">Contribuir</a></p>
 
-<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="../../docs/screenshots/dashboard.png"><img src="../../docs/media/demo.gif" width="960" alt="Demostración de UsageDock: cuentas, temas, estadísticas, reinicios de Codex y miniwidget de escritorio"></picture></p>
-<p align="center"><sub>Vistas reales de la aplicación con cuentas ficticias. Esta presentación muestra la interfaz en polaco.</sub></p>
+<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="../../docs/screenshots/es/dashboard.png"><img src="../../docs/media/demo-es.gif" width="960" alt="Demostración de UsageDock: cuentas, temas, estadísticas, reinicios de Codex y miniwidget de escritorio"></picture></p>
+<p align="center"><sub>Vistas reales de la aplicación con cuentas ficticias. Esta presentación muestra la interfaz en español.</sub></p>
 
 <details>
 <summary>¿Prefieres imágenes estáticas? Ver el panel y el miniwidget</summary>
 
-<p align="center"><img src="../../docs/screenshots/dashboard.png" width="960" alt="UsageDock"></p>
-<p align="center"><img src="../../docs/screenshots/widget.png" width="268" alt="UsageDock"><img src="../../docs/screenshots/widget-light.png" width="268" alt="UsageDock"></p>
+<p align="center"><img src="../../docs/screenshots/es/dashboard.png" width="960" alt="UsageDock"></p>
+<p align="center"><img src="../../docs/screenshots/es/widget.png" width="268" alt="UsageDock"><img src="../../docs/screenshots/es/widget-light.png" width="268" alt="UsageDock"></p>
 
 </details>
 
@@ -43,7 +43,7 @@ Desarrollado con **C# / WPF y .NET 8**. Sin Electron, cuenta en la nube de Usage
 
 **Automático** sigue el idioma de visualización de Windows y usa inglés cuando no está disponible. Las instalaciones nuevas utilizan este ajuste. Las existentes conservan el polaco hasta que cambies la preferencia.
 
-<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="../../docs/screenshots/languages.png"><img src="../../docs/media/languages.gif" width="960" alt="Presentación de UsageDock en inglés, polaco, alemán, francés y español"></picture></p>
+<p align="center"><img src="../../docs/screenshots/es/settings.png" width="960" alt="Ajustes de idioma en español"></p>
 
 ## Instalar y conectar
 

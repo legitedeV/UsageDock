@@ -14,14 +14,14 @@
 
 <p align="center"><a href="https://github.com/legitedeV/UsageDock/releases/latest"><strong>Pobierz dla Windows</strong></a> · <a href="../../CONTRIBUTING.md">Dołącz do rozwoju</a></p>
 
-<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="../../docs/screenshots/dashboard.png"><img src="../../docs/media/demo.gif" width="960" alt="Demonstracja UsageDock: konta, motywy, statystyki, resety Codex i widżet pulpitu"></picture></p>
+<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="../../docs/screenshots/pl/dashboard.png"><img src="../../docs/media/demo-pl.gif" width="960" alt="Demonstracja UsageDock: konta, motywy, statystyki, resety Codex i widżet pulpitu"></picture></p>
 <p align="center"><sub>Rzeczywiste widoki aplikacji z fikcyjnymi kontami. Prezentacja pokazuje polski interfejs.</sub></p>
 
 <details>
 <summary>Wolisz nieruchome obrazy? Zobacz panel i widżet</summary>
 
-<p align="center"><img src="../../docs/screenshots/dashboard.png" width="960" alt="UsageDock"></p>
-<p align="center"><img src="../../docs/screenshots/widget.png" width="268" alt="UsageDock"><img src="../../docs/screenshots/widget-light.png" width="268" alt="UsageDock"></p>
+<p align="center"><img src="../../docs/screenshots/pl/dashboard.png" width="960" alt="UsageDock"></p>
+<p align="center"><img src="../../docs/screenshots/pl/widget.png" width="268" alt="UsageDock"><img src="../../docs/screenshots/pl/widget-light.png" width="268" alt="UsageDock"></p>
 
 </details>
 
@@ -43,7 +43,7 @@ Aplikacja powstała w **C# / WPF na .NET 8**. Bez Electrona, konta w chmurze Usa
 
 Opcja **Automatycznie** korzysta z języka wyświetlania Windows, a dla nieobsługiwanego języka wybiera angielski. Nowe instalacje używają tego ustawienia. Istniejące instalacje zachowują polski do czasu zmiany preferencji.
 
-<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="../../docs/screenshots/languages.png"><img src="../../docs/media/languages.gif" width="960" alt="Prezentacja panelu UsageDock po angielsku, polsku, niemiecku, francusku i hiszpańsku"></picture></p>
+<p align="center"><img src="../../docs/screenshots/pl/settings.png" width="960" alt="Ustawienia języka po polsku"></p>
 
 ## Instalacja i pierwsze połączenie
 

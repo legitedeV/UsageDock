@@ -14,14 +14,14 @@
 
 <p align="center"><a href="https://github.com/legitedeV/UsageDock/releases/latest"><strong>Download for Windows</strong></a> · <a href="CONTRIBUTING.md">Contribute</a></p>
 
-<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/screenshots/dashboard.png"><img src="docs/media/demo.gif" width="960" alt="UsageDock demo: accounts, themes, statistics, Codex resets and the desktop widget"></picture></p>
-<p align="center"><sub>Actual app renders with synthetic accounts. This tour shows the Polish interface.</sub></p>
+<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/screenshots/en/dashboard.png"><img src="docs/media/demo-en.gif" width="960" alt="UsageDock demo: accounts, themes, statistics, Codex resets and the desktop widget"></picture></p>
+<p align="center"><sub>Actual app renders with synthetic accounts. This tour shows the English interface.</sub></p>
 
 <details>
 <summary>Prefer still images? Open the dashboard and widget</summary>
 
-<p align="center"><img src="docs/screenshots/dashboard.png" width="960" alt="UsageDock"></p>
-<p align="center"><img src="docs/screenshots/widget.png" width="268" alt="UsageDock"><img src="docs/screenshots/widget-light.png" width="268" alt="UsageDock"></p>
+<p align="center"><img src="docs/screenshots/en/dashboard.png" width="960" alt="UsageDock"></p>
+<p align="center"><img src="docs/screenshots/en/widget.png" width="268" alt="UsageDock"><img src="docs/screenshots/en/widget-light.png" width="268" alt="UsageDock"></p>
 
 </details>
 
@@ -43,7 +43,7 @@ Built with **C# / WPF and .NET 8**. No Electron runtime, UsageDock cloud account
 
 **Automatic** follows the Windows display language, with English as the fallback. New installations use Automatic. Existing installations keep Polish until you change the preference.
 
-<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/screenshots/languages.png"><img src="docs/media/languages.gif" width="960" alt="UsageDock dashboard tour in English, Polish, German, French and Spanish"></picture></p>
+<p align="center"><img src="docs/screenshots/en/settings.png" width="960" alt="Language settings in English"></p>
 
 ## Install and connect
 
