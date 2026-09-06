@@ -1,145 +1,98 @@
+<p align="center"><img src="docs/media/logo.svg" width="64" height="64" alt="UsageDock"></p>
 <h1 align="center">UsageDock</h1>
 <p align="center"><strong>Your AI accounts. One place on your desktop.</strong></p>
-<p align="center">Claude and Codex limits, banked resets, and API spending — in a native Windows dashboard and pinned widget.</p>
+<p align="center">Claude and Codex limits, banked resets and API spending — in a native Windows dashboard and pinned widget.</p>
+
+<p align="center"><strong>English</strong> · <a href="docs/readme/pl.md">Polski</a> · <a href="docs/readme/de.md">Deutsch</a> · <a href="docs/readme/fr.md">Français</a> · <a href="docs/readme/es.md">Español</a></p>
 
 <p align="center">
-  <a href="https://github.com/legitedeV/UsageDock/actions/workflows/ci.yml"><img src="https://github.com/legitedeV/UsageDock/actions/workflows/ci.yml/badge.svg?branch=main" alt="Windows build and tests"></a>
-  <a href="https://github.com/legitedeV/UsageDock/releases/latest"><img src="https://img.shields.io/github/v/release/legitedeV/UsageDock?color=16866d&amp;label=release" alt="Latest release"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16866d" alt="MIT license"></a>
+  <a href="https://github.com/legitedeV/UsageDock/actions/workflows/ci.yml"><img src="https://github.com/legitedeV/UsageDock/actions/workflows/ci.yml/badge.svg?branch=main" alt="Windows CI"></a>
+  <a href="https://github.com/legitedeV/UsageDock/releases/latest"><img src="https://img.shields.io/github/v/release/legitedeV/UsageDock?color=16866d&amp;label=release" alt="Release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16866d" alt="MIT"></a>
   <img src="https://img.shields.io/badge/Windows_11-x64-16866d" alt="Windows 11 x64">
 </p>
 
-<p align="center">
-  <a href="https://github.com/legitedeV/UsageDock/releases/latest"><strong>Download for Windows</strong></a> ·
-  <a href="#what-you-can-see">Features</a> ·
-  <a href="#supported-connections">Connections</a> ·
-  <a href="docs/GETTING_STARTED_PL.md">Instrukcja po polsku</a> ·
-  <a href="CONTRIBUTING.md">Contribute</a>
-</p>
+<p align="center"><a href="https://github.com/legitedeV/UsageDock/releases/latest"><strong>Download for Windows</strong></a> · <a href="CONTRIBUTING.md">Contribute</a></p>
 
-<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/screenshots/dashboard.png"><img src="docs/media/demo.gif" width="960" alt="Animated tour of UsageDock: account limits, light and dark themes, statistics, banked Codex resets and the desktop widget."></picture></p>
-<p align="center"><sub>Actual app renders with synthetic demo data. The current application interface is in Polish.</sub></p>
+<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/screenshots/dashboard.png"><img src="docs/media/demo.gif" width="960" alt="UsageDock demo: accounts, themes, statistics, Codex resets and the desktop widget"></picture></p>
+<p align="center"><sub>Actual app renders with synthetic accounts. This tour shows the Polish interface.</sub></p>
 
 <details>
-<summary>Prefer still images? View the dashboard and widget</summary>
+<summary>Prefer still images? Open the dashboard and widget</summary>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dashboard.png">
-  <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/dashboard-light.png">
-  <img src="docs/screenshots/dashboard.png" alt="UsageDock account dashboard with allowances, reset dates and API budgets">
-</picture>
-
-<p align="center">
-  <img src="docs/screenshots/widget.png" width="268" alt="Dark desktop widget">
-  <img src="docs/screenshots/widget-light.png" width="268" alt="Light desktop widget">
-</p>
-
-[Statistics](docs/screenshots/statistics.png) · [History](docs/screenshots/history.png) · [Settings](docs/screenshots/settings.png) · [Banked resets](docs/screenshots/resets.png)
+<p align="center"><img src="docs/screenshots/dashboard.png" width="960" alt="UsageDock"></p>
+<p align="center"><img src="docs/screenshots/widget.png" width="268" alt="UsageDock"><img src="docs/screenshots/widget-light.png" width="268" alt="UsageDock"></p>
 
 </details>
 
-## What you can see
+## Keep your usage in sight
 
-Switching between accounts should not mean opening a different browser session every time you want to check a limit.
-
-| Keep track of | In UsageDock |
+| Track | In UsageDock |
 |---|---|
-| **Multiple accounts** | Named Claude and Codex connections in one searchable view. |
-| **Your next reset** | Local dates and times, precise countdowns, and the correct time-zone offset. |
-| **Banked Codex resets** | Available count, grant and expiry dates, and explicit redemption with an account-specific confirmation. |
-| **API spending** | Month-to-date costs, reported tokens and optional local budgets; workspace or project filters where supported. |
-| **A desktop widget** | Pin favorite accounts and keep the compact window above other applications. |
-| **Your preferred theme** | Light and dark themes, switched instantly from the dashboard or widget. |
+| **Accounts** | Named Claude and Codex connections in one searchable view. |
+| **Resets** | Precise countdowns, local dates and time-zone offsets; banked Codex reset inventory and explicit redemption. |
+| **API spending** | Month-to-date costs, reported tokens and optional local budgets, with supported workspace or project filters. |
+| **Your desktop** | Favorite accounts in an always-on-top widget, with instant light and dark themes. |
+| **Your language** | English, Polish, German, French and Spanish throughout the app and installer. |
 
-Built with **C# / WPF and .NET 8**. No Electron runtime, UsageDock cloud account or telemetry. Provider credentials stay on your machine and are encrypted with Windows DPAPI.
+Built with **C# / WPF and .NET 8**. No Electron runtime, UsageDock cloud account or telemetry.
 
-## Get started
+## Five languages, no restart
 
-**Windows 11 x64** · no separate .NET installation needed for release downloads.
+**New in 0.5.0:** choose **Settings → Language** to switch every window, the widget and tray menu immediately. Dates and numbers follow the selected language; your account names stay unchanged.
 
-1. Open the [latest release](https://github.com/legitedeV/UsageDock/releases/latest).
-2. Download the **installer** (`-setup.exe`) or **portable ZIP**. The installer runs for the current Windows user; extract the complete ZIP before launching `UsageDock.exe`.
-3. Choose **Dodaj połączenie** (Add connection), name the account and enter a credential or explicitly select a supported CLI credential file.
-4. Refresh your connections. Star the accounts you want in the widget, then open **Mini widget** from the tray menu.
+**Automatic** follows the Windows display language, with English as the fallback. New installations use Automatic. Existing installations keep Polish until you change the preference.
 
-You can explore the interface without connecting an account:
+<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/screenshots/languages.png"><img src="docs/media/languages.gif" width="960" alt="UsageDock dashboard tour in English, Polish, German, French and Spanish"></picture></p>
 
-```powershell
-.\UsageDock.exe --demo
-```
+## Install and connect
 
-The ZIP is portable as an application package; saved credentials remain tied to your Windows user and machine. Builds are currently unsigned. Verify the download against `SHA256SUMS.txt` from the same trusted release.
+**Windows 11 x64** · release downloads include the .NET runtime.
+
+1. Open the [latest release](https://github.com/legitedeV/UsageDock/releases/latest) and download the **installer** (`-setup.exe`) or **portable ZIP**.
+2. Run the per-user installer, or extract the entire ZIP and launch `UsageDock.exe`.
+3. Select **Add connection**, name your account, and enter a credential or explicitly choose a supported CLI credential file.
+4. Refresh, star your favorite accounts, and open **Mini widget** from the tray menu.
+
+To explore without connecting an account: `UsageDock.exe --demo`.
+
+Builds are **unsigned**. Check the download against `SHA256SUMS.txt` from the same trusted release. The ZIP is portable as an application package; saved credentials remain tied to your Windows user and machine.
 
 ## Supported connections
 
-| Provider | What is displayed | What you need |
+| Connection | Displays | Requires |
 |---|---|---|
-| **Claude OAuth** | Subscription usage and reset windows | An existing Claude access token or a supported CLI credential file. |
-| **Claude web session** | Organization-specific subscription usage | Your session key and organization ID. |
-| **Codex / ChatGPT account** | Codex allowance windows and banked reset credits | A Codex access token and the applicable ChatGPT account ID. |
-| **Anthropic API** | Organization costs and messages token usage | An Admin API key; optional workspace filter. |
-| **OpenAI API** | Organization costs and completions token usage | An organization Admin API key; optional project filter. |
+| **Claude OAuth** | Subscription usage and reset windows | Existing access token or supported CLI credential file. |
+| **Claude web session** | Organization subscription usage | Session key and organization ID. |
+| **Codex / ChatGPT account** | Codex windows and banked resets | Codex access token and applicable account ID. |
+| **Anthropic API** | Organization costs and messages tokens | Admin API key; optional workspace filter. |
+| **OpenAI API** | Organization costs and completions tokens | Organization Admin API key; optional project filter. |
 
-**Codex allowances are not general ChatGPT conversation quotas.** Subscription integrations use experimental endpoints and can change without notice. Only connect accounts you own or administer. Expired credentials must be reconnected; automatic OAuth login and token renewal are not implemented.
+**Codex limits are not general ChatGPT conversation quotas.** Subscription integrations are experimental and may change. Connect only accounts you own or administer. Built-in OAuth login and automatic token renewal are not implemented.
 
-Unavailable data stays unavailable — it is never replaced with a made-up zero. API budgets are local thresholds, not provider spending caps. API reporting uses UTC month boundaries. Statistics and history cover the current app session, not a persistent billing archive.
+Unavailable data is never replaced with a made-up zero. API budgets are local thresholds, not provider spending caps; reporting uses UTC month boundaries. History records the current session, not a persistent billing archive.
 
-<details>
-<summary>How banked reset redemption works</summary>
+A banked reset is consumed only after an account-specific confirmation. Uncertain results retain the same request ID across restarts for an explicit retry; the app never automatically consumes another reset. Provider availability and idempotency remain external dependencies. See the [integration contracts](docs/INTEGRATIONS.md).
 
-Choose **Zarządzaj resetami** (Manage resets) on a Codex account to inspect each credit. **Użyj resetu** (Use reset) asks you to confirm the account and selected expiry before sending a request. A banked reset can refresh eligible five-hour and weekly windows; this action does not buy credits.
+## Local credentials, direct connections
 
-UsageDock checks availability before sending. If the result is uncertain, it retains the same request identifier across restarts so an explicit retry can resolve that attempt. It never automatically consumes another reset. Provider availability and idempotency remain external dependencies.
+UsageDock talks directly to your configured providers. Credentials are encrypted at rest with **Windows DPAPI** for your Windows user. There is no UsageDock server.
 
-See the [integration contracts](docs/INTEGRATIONS.md) for technical details.
-
-</details>
-
-## Local by design
-
-There is no UsageDock server. The app talks directly to the configured provider, with secrets encrypted at rest for the current Windows user. Demo screenshots and tests use synthetic accounts.
-
-Do not publish credential files, raw provider responses or screenshots of private accounts in issues. Report vulnerabilities through [private vulnerability reporting](https://github.com/legitedeV/UsageDock/security/advisories/new). See [SECURITY.md](SECURITY.md) for the security model and limitations.
+Do not include credentials, raw provider responses or private-account screenshots in issues. Use [private vulnerability reporting](https://github.com/legitedeV/UsageDock/security/advisories/new) for security reports; read the [security model](SECURITY.md).
 
 ## Build and contribute
 
-Use Windows and the **.NET 8 SDK**:
+Clone the repository on Windows and install the **.NET 8 SDK**. Run these commands from the repository root:
 
 ```powershell
-git clone https://github.com/legitedeV/UsageDock.git
-cd UsageDock
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify-ui.ps1
 ```
 
-The Core test task enforces **at least 80% line coverage**. The separate UI task checks the WPF/controller flows and generates screenshots; it does not consume real resets or access real account credentials. [Verification notes](docs/VERIFICATION.md) record the scope and limitations.
+Core tests enforce **80% minimum line coverage**. The separate UI task checks desktop flows and generates screenshots using synthetic data, without real credentials or reset consumption. See [verification scope](docs/VERIFICATION.md).
 
-| Area | Location |
-|---|---|
-| Providers, models and encrypted storage | `src/UsageDock.Core` |
-| Native dashboard, widget and Windows integration | `src/UsageDock.App` |
-| Synthetic provider and storage tests | `tests/UsageDock.Core.Tests` |
-| Build, UI checks and release packaging | `scripts` |
-
-Bug reports, integration fixes, accessibility improvements and documentation contributions are welcome. Start with the [contribution guide](CONTRIBUTING.md) or [open an issue](https://github.com/legitedeV/UsageDock/issues/new/choose).
-
-<details>
-<summary>Package a release or regenerate the animated tour</summary>
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package.ps1 -Version 0.4.1
-```
-
-The portable package is self-contained. To build the installer too, pass `-InnoSetupCompiler` with the path to Inno Setup 6 and add `-RequireInstaller`. The release workflow validates a version tag, builds and tests on Windows, and prepares a draft release.
-
-The README tour is assembled from synthetic screenshots with FFmpeg:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\render-readme-demo.ps1
-```
-
-</details>
+Bug fixes, accessibility improvements and translations are welcome. The five UTF-8 catalogs live in `src/UsageDock.Core/Localization/`; preserve keys and numbered placeholders. Start with [CONTRIBUTING.md](CONTRIBUTING.md), [report an issue](https://github.com/legitedeV/UsageDock/issues/new/choose), or read the [release notes](CHANGELOG.md).
 
 ---
 

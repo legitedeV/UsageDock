@@ -8,6 +8,8 @@ UsageDock zbiera w jednym oknie limity subskrypcji oraz koszty API wielu kont. W
 4. Dla API użyj klucza administracyjnego organizacji. Opcjonalnie ogranicz widok do workspace'u Anthropic lub projektu OpenAI. Zwykły klucz do generowania odpowiedzi może nie mieć uprawnień do raportów.
 5. Odśwież dane. Zaznacz ulubione połączenia, które chcesz widzieć w widżecie.
 
+Język programu wybierzesz w Ustawieniach. Dostępne są polski, angielski, niemiecki, francuski i hiszpański. Opcja automatyczna korzysta z języka wyświetlania Windows, a dla nieobsługiwanych języków wybiera angielski. Zmiana działa bez restartu, również w widżecie. Dotychczasowe instalacje zachowują polski; nowe korzystają domyślnie z ustawienia automatycznego. Nazwy kont pozostają bez zmian. Kwoty budżetu wpisuj z separatorem dziesiętnym wybranego języka, bez separatorów tysięcy.
+
 Limity Codex dotyczą pracy w Codex na koncie ChatGPT; nie oznaczają limitów wszystkich rozmów w ChatGPT. Koszty API dotyczą bieżącego miesiąca według UTC. Budżet wpisany w aplikacji jest lokalnym progiem ostrzegania, a nie blokadą wydatków u dostawcy.
 
 Połączenia abonamentowe używają eksperymentalnych endpointów. Gdy token lub sesja wygaśnie, ponownie podaj aktualne poświadczenie. Aplikacja nie obiecuje automatycznego logowania ani odświeżania tokenów. Brak danych jest pokazywany jako niedostępność, nie jako zerowe zużycie.

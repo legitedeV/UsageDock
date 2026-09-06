@@ -25,7 +25,10 @@ internal sealed class UsageClock : IDisposable
     {
         var label = new TextBlock { FontSize = size, Foreground = Ui.Muted,
             TextTrimming = TextTrimming.CharacterEllipsis };
-        entries.Add(new Entry(new WeakReference<TextBlock>(label), at, full));
+        var entry=new Entry(new WeakReference<TextBlock>(label),at,full);
+        entries.Add(entry);
+        label.Unloaded+=(_,_)=>entries.Remove(entry);
+        label.Loaded+=(_,_)=>{if(!entries.Contains(entry))entries.Add(entry);};
         Update(label, at, full, DateTimeOffset.UtcNow);
         return label;
     }
@@ -41,8 +44,8 @@ internal sealed class UsageClock : IDisposable
 
     private static void Update(TextBlock label, DateTimeOffset? at, bool full, DateTimeOffset now)
     {
-        label.Text = full ? UsageTime.Full(at, now, TimeZoneInfo.Local) : UsageTime.Relative(at, now);
-        label.ToolTip = UsageTime.Full(at, now, TimeZoneInfo.Local);
+        label.Text = full ? UsageTime.Full(at, now, TimeZoneInfo.Local,Localization.CurrentLanguage) : UsageTime.Relative(at, now, Localization.CurrentLanguage);
+        label.ToolTip = UsageTime.Full(at, now, TimeZoneInfo.Local,Localization.CurrentLanguage);
     }
     private void Tick(object? sender, EventArgs e) => Refresh(DateTimeOffset.UtcNow);
     public void Dispose() { timer.Stop(); timer.Tick -= Tick; entries.Clear(); }
@@ -55,14 +58,14 @@ public sealed partial class Dashboard
 
     private UIElement ResetDisplay(DateTimeOffset? at, double width = 170)
     {
-        var panel = new StackPanel { Width = width, ToolTip = UsageTime.Absolute(at, TimeZoneInfo.Local) };
+        var panel = new StackPanel { Width = width, ToolTip = UsageTime.Absolute(at, TimeZoneInfo.Local,Localization.CurrentLanguage) };
         var relative = clock.Label(at);
         panel.Children.Add(relative);
         if (at.HasValue)
         {
             var local = TimeZoneInfo.ConvertTime(at.Value, TimeZoneInfo.Local);
-            panel.Children.Add(new TextBlock { Text = local.ToString("d MMM, HH:mm", CultureInfo.GetCultureInfo("pl-PL")),
-                FontSize = 11, Foreground = Ui.Muted, ToolTip = UsageTime.Absolute(at, TimeZoneInfo.Local) });
+            panel.Children.Add(new TextBlock { Text = local.ToString("d MMM, HH:mm", Localization.Culture),
+                FontSize = 11, Foreground = Ui.Muted, ToolTip = UsageTime.Absolute(at, TimeZoneInfo.Local,Localization.CurrentLanguage) });
         }
         return panel;
     }

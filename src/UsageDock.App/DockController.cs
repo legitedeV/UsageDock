@@ -84,11 +84,11 @@ public sealed partial class DockController : IDisposable
                     foreach(var window in result.Snapshot.Windows)
                     {
                         var before=current.Snapshot.Windows.FirstOrDefault(w=>w.Name==window.Name)?.UsedPercent;
-                        if(before.HasValue&&window.UsedPercent.HasValue&&Bucket(before.Value)!=Bucket(window.UsedPercent.Value)) Alert?.Invoke($"{current.Profile.Name}: {window.Name} is {window.UsedPercent:0}% used.");
+                        if(before.HasValue&&window.UsedPercent.HasValue&&Bucket(before.Value)!=Bucket(window.UsedPercent.Value)) Alert?.Invoke(Ui.L("notifications.limit",current.Profile.Name,Dashboard.WindowLabel(window.Name),Localization.Percent(window.UsedPercent)));
                     }
                 }
                 if(Settings.NotificationsEnabled&&result.Snapshot?.CostUsd is { } cost&&current.Snapshot?.CostUsd is { } oldCost&&current.Profile.MonthlyBudget is >0)
-                { var budget=current.Profile.MonthlyBudget.Value; if(Bucket((double)(oldCost/budget*100))!=Bucket((double)(cost/budget*100))) Alert?.Invoke($"{current.Profile.Name}: local budget is {cost/budget*100:0}% used."); }
+                { var budget=current.Profile.MonthlyBudget.Value; if(Bucket((double)(oldCost/budget*100))!=Bucket((double)(cost/budget*100))) Alert?.Invoke(Ui.L("notifications.budget",current.Profile.Name,Localization.Percent((double)(cost/budget*100)))); }
                 Changed?.Invoke();
             }));
         }

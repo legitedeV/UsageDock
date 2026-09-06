@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -34,7 +34,7 @@ internal static class Design
  }
  public static Button Action(string icon,string label,Action action,double width=40,double height=40,bool primary=false,bool iconOnly=false)
  {
-  var panel=new StackPanel{Orientation=Orientation.Horizontal,VerticalAlignment=VerticalAlignment.Center};var glyph=Icon(icon,18,primary?(Ui.Light?Brushes.White:Ui.Hex("#082F2E")):Ui.Muted);if(icon=="star"&&label=="Usuń z widgetu"){var path=(Path)((Viewbox)glyph).Child;path.Fill=Ui.Hex("#F5BC35");path.Stroke=Ui.Hex("#F5BC35");}panel.Children.Add(glyph);
+  var panel=new StackPanel{Orientation=Orientation.Horizontal,VerticalAlignment=VerticalAlignment.Center};var glyph=Icon(icon,18,primary?(Ui.Light?Brushes.White:Ui.Hex("#082F2E")):Ui.Muted);if(icon=="star"&&label==Ui.L("Usuń z widgetu")){var path=(Path)((Viewbox)glyph).Child;path.Fill=Ui.Hex("#F5BC35");path.Stroke=Ui.Hex("#F5BC35");}panel.Children.Add(glyph);
   if(!iconOnly)panel.Children.Add(new TextBlock{Text=label,FontSize=16,Margin=new Thickness(8,0,0,0),VerticalAlignment=VerticalAlignment.Center});
   var b=Ui.Button(label,action,primary);b.Content=panel;b.Width=width;b.Height=height;b.Margin=new Thickness(0);b.Padding=new Thickness(6);b.ToolTip=label;System.Windows.Automation.AutomationProperties.SetName(b,label);if(iconOnly){b.Background=Brushes.Transparent;b.BorderThickness=new Thickness(0);b.BorderBrush=Brushes.Transparent;}return b;
  }

@@ -1,5 +1,5 @@
 #ifndef AppVersion
-  #define AppVersion "0.4.1"
+  #define AppVersion "0.5.0"
 #endif
 #ifndef PublishDir
   #error PublishDir is required
@@ -27,12 +27,18 @@ OutputBaseFilename=UsageDock-{#AppVersion}-win-x64-setup
 CloseApplications=yes
 RestartApplications=no
 LicenseFile=..\LICENSE
+[Languages]
+Name: "en"; MessagesFile: "compiler:Default.isl"
+Name: "pl"; MessagesFile: "compiler:Languages\Polish.isl"
+Name: "de"; MessagesFile: "compiler:Languages\German.isl"
+Name: "fr"; MessagesFile: "compiler:Languages\French.isl"
+Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
 [Tasks]
-Name: "desktopicon"; Description: "Create a desktop shortcut"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; Flags: unchecked
 [Files]
 Source: "{#PublishDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 [Icons]
 Name: "{group}\UsageDock"; Filename: "{app}\UsageDock.exe"
 Name: "{autodesktop}\UsageDock"; Filename: "{app}\UsageDock.exe"; Tasks: desktopicon
 [Run]
-Filename: "{app}\UsageDock.exe"; Description: "Launch UsageDock"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\UsageDock.exe"; Description: "{cm:LaunchProgram,UsageDock}"; Flags: nowait postinstall skipifsilent

@@ -7,7 +7,7 @@ public record UsageSnapshot(Guid ConnectionId, DateTimeOffset FetchedAt, IReadOn
 public record FetchResult(UsageSnapshot? Snapshot, string? Error = null, DateTimeOffset? RetryAfter = null);
 public record WorkspaceOption(string Id, string Name);
 public record ImportedCredential(string Secret, string? AccountId);
-public record AppSettings(string Theme = "Dark", int RefreshSeconds = 300, bool NotificationsEnabled = false, bool StartWithWindows = false);
+public record AppSettings(string Theme = "Dark", int RefreshSeconds = 300, bool NotificationsEnabled = false, bool StartWithWindows = false, string Language = "auto");
 public record StoredState(IReadOnlyList<ConnectionProfile> Connections, AppSettings Settings);
 public interface IUsageProvider
 {

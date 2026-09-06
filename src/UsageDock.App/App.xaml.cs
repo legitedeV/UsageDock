@@ -21,19 +21,37 @@ public partial class App : Application
         try
         {
             var screenshot=Value(e.Args,"--screenshot");var smoke=Value(e.Args,"--smoke-test");var demo=e.Args.Contains("--demo")||screenshot!=null||smoke!=null;
-            if(!demo){instance=new System.Threading.Mutex(true,@"Local\UsageDock-"+System.Security.Principal.WindowsIdentity.GetCurrent().User?.Value,out var created);if(!created){MessageBox.Show("UsageDock już działa. Otwórz go z zasobnika systemowego.","UsageDock");Shutdown();return;}}
+            Localization.SetLanguage("auto");
+            if(!demo){instance=new System.Threading.Mutex(true,@"Local\UsageDock-"+System.Security.Principal.WindowsIdentity.GetCurrent().User?.Value,out var created);if(!created){MessageBox.Show(Ui.L("UsageDock już działa. Otwórz go z zasobnika systemowego."),"UsageDock");Shutdown();return;}}
             controller=new DockController(demo?new OfflineProvider():new ProviderService(),demo?null:new LocalStore(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"UsageDock")),demo);
-            if(demo)controller.Seed(DemoData.Accounts());Ui.Theme(controller.Settings.Theme=="Light");dashboard=new Dashboard(controller);MainWindow=dashboard;dashboard.WidgetRequested+=ShowWidget;dashboard.Show();
-            if(screenshot!=null){await Task.Delay(300);await Verification.CaptureAsync(screenshot,controller,dashboard);dashboard.AllowClose=true;Shutdown();return;}
+            if(demo){controller.SetSettings(controller.Settings with {Language=Value(e.Args,"--language")??"pl"});controller.Seed(DemoData.Accounts());}
+            Localization.SetLanguage(controller.Settings.Language);Ui.Theme(controller.Settings.Theme=="Light");dashboard=new Dashboard(controller);MainWindow=dashboard;dashboard.WidgetRequested+=ShowWidget;dashboard.Show();
+            if(screenshot!=null){await Task.Delay(300);await Verification.CaptureAsync(screenshot,controller,dashboard);if(e.Args.Contains("--all-languages"))await Verification.CaptureLanguagesAsync(screenshot,controller,dashboard);dashboard.AllowClose=true;Shutdown();return;}
             if(smoke!=null){var okay=await Verification.SmokeAsync(smoke,controller,dashboard);dashboard.AllowClose=true;Shutdown(okay?0:1);return;}
             tray=new Forms.NotifyIcon{Text="UsageDock",Icon=TrayArtwork.Create(),Visible=true};
-            var menu=new Forms.ContextMenuStrip();menu.Items.Add("Otwórz UsageDock",null,(_,_)=>{dashboard.Show();dashboard.Activate();});menu.Items.Add("Mini widget",null,(_,_)=>ShowWidget());menu.Items.Add("Odśwież",null,async(_,_)=>await controller.RefreshAsync());menu.Items.Add("Zakończ",null,(_,_)=>{dashboard.AllowClose=true;Shutdown();});tray.ContextMenuStrip=menu;tray.DoubleClick+=(_,_)=>{dashboard.Show();dashboard.Activate();};
+            RefreshTrayLanguage();Localization.Changed+=RefreshTrayLanguage;tray.DoubleClick+=(_,_)=>{dashboard.Show();dashboard.Activate();};
             controller.Alert+=message=>tray.ShowBalloonTip(5000,"UsageDock",message,Forms.ToolTipIcon.Info);
             timer=new DispatcherTimer{Interval=TimeSpan.FromSeconds(controller.Settings.RefreshSeconds)};timer.Tick+=async(_,_)=>await controller.RefreshAsync();controller.Changed+=()=>timer.Interval=TimeSpan.FromSeconds(controller.Settings.RefreshSeconds);timer.Start();await controller.RefreshAsync();
         }
-        catch(Exception failure){if(Value(e.Args,"--smoke-test") is { } failurePath){File.WriteAllText(failurePath,failure.GetType().Name+" at "+failure.StackTrace);Shutdown(1);return;}MessageBox.Show("Nie udało się uruchomić UsageDock. Sprawdź dostęp do folderu danych aplikacji. Zapisane poświadczenia nie zostały zmienione.","UsageDock",MessageBoxButton.OK,MessageBoxImage.Error);Shutdown(1);}
+        catch(Exception failure){if(Value(e.Args,"--smoke-test") is { } failurePath){File.WriteAllText(failurePath,failure.GetType().Name+" at "+failure.StackTrace);Shutdown(1);return;}MessageBox.Show(Ui.L("Nie udało się uruchomić UsageDock. Sprawdź dostęp do folderu danych aplikacji. Zapisane poświadczenia nie zostały zmienione."),"UsageDock",MessageBoxButton.OK,MessageBoxImage.Error);Shutdown(1);}
+    }
+    internal static Forms.ContextMenuStrip CreateTrayMenu(Action open,Action widget,Action refresh,Action exit)
+    {
+        var menu=new Forms.ContextMenuStrip();
+        menu.Items.Add(Ui.L("Otwórz UsageDock"),null,(_,_)=>open());
+        menu.Items.Add(Ui.L("Mini widget"),null,(_,_)=>widget());
+        menu.Items.Add(Ui.L("Odśwież"),null,(_,_)=>refresh());
+        menu.Items.Add(Ui.L("Zakończ"),null,(_,_)=>exit());
+        return menu;
+    }
+    private void RefreshTrayLanguage()
+    {
+        if(tray==null)return;
+        var previous=tray.ContextMenuStrip;
+        tray.ContextMenuStrip=CreateTrayMenu(()=>{dashboard!.Show();dashboard.Activate();},ShowWidget,async()=>await controller!.RefreshAsync(),()=>{dashboard!.AllowClose=true;Shutdown();});
+        previous?.Dispose();
     }
     private static string? Value(string[] args,string key){var index=Array.IndexOf(args,key);return index>=0&&index+1<args.Length?args[index+1]:null;}
     private void ShowWidget(){if(widget==null){widget=new Widget(controller!,dashboard!);widget.Closed+=(_,_)=>widget=null;}widget.Show();widget.Activate();}
-    protected override void OnExit(ExitEventArgs e){timer?.Stop();tray?.Dispose();controller?.Dispose();instance?.Dispose();base.OnExit(e);}
+    protected override void OnExit(ExitEventArgs e){Localization.Changed-=RefreshTrayLanguage;timer?.Stop();tray?.Dispose();controller?.Dispose();instance?.Dispose();base.OnExit(e);}
 }

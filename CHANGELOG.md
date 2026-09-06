@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.0 — 2026-09-06
+
+- Five interface and installer languages: English, Polish, German, French and Spanish.
+- Automatic Windows language detection, a saved language preference and live interface switching.
+- Localized dates, countdowns and numbers, with unambiguous decimal budget input.
+- Five translated README pages with language navigation and an animated language tour.
+
+Verified with 196 Core tests (97.46% line coverage) and 161 separate UI checks. Existing accounts and preferences are preserved.
+
 ## 0.4.1 — 2026-09-06
 
 First public downloadable release.

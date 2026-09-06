@@ -17,9 +17,13 @@ public sealed class LocalStore
         try
         {
             var info = new FileInfo(path); if (info.Length > 1024 * 1024) throw new InvalidDataException();
-            var state = JsonSerializer.Deserialize<StoredState>(File.ReadAllText(path), new JsonSerializerOptions { MaxDepth = 16 }) ?? throw new InvalidDataException();
+            var json = File.ReadAllText(path);
+            var state = JsonSerializer.Deserialize<StoredState>(json, new JsonSerializerOptions { MaxDepth = 16 }) ?? throw new InvalidDataException();
             ValidateState(state);
-            corrupt = false; return state with { Connections = Array.AsReadOnly(state.Connections.ToArray()) };
+            using var document = JsonDocument.Parse(json, new JsonDocumentOptions { MaxDepth = 16 });
+            var language = document.RootElement.GetProperty("Settings").TryGetProperty("Language", out _)
+                ? Localization.NormalizePreference(state.Settings.Language) : "pl";
+            corrupt = false; return state with { Connections = Array.AsReadOnly(state.Connections.ToArray()), Settings = state.Settings with { Language = language } };
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException or ArgumentException)
         { corrupt = true; throw new InvalidDataException("Local settings could not be read. Restore or rename the settings file before saving."); }

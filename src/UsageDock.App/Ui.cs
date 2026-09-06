@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -7,6 +7,7 @@ using System.Windows.Markup;
 namespace UsageDock.App;
 internal static partial class Ui
 {
+    public static string L(string key, params object?[] arguments) => Localization.Text(key, arguments);
     public static bool Light;
     public static event Action? PaletteChanged;
     public static Brush Background=>Hex(Light?"#F2F4F6":"#111B21");

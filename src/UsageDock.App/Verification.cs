@@ -54,6 +54,25 @@ internal static class Verification
         var resetAccount=baseline.First(a=>a.Profile.Provider==ProviderKind.Codex);controller.Seed(baseline);var resetWindow=dashboard.CreateResetCreditsWindow(resetAccount.Profile.Id)!;resetWindow.Show();await Task.Delay(60);Capture(resetWindow,Path.Combine(directory,"reset-inventory.png"));resetWindow.Close();Click(dashboard,"Theme.Toggle.Main");resetWindow=dashboard.CreateResetCreditsWindow(resetAccount.Profile.Id)!;resetWindow.Show();await Task.Delay(60);Capture(resetWindow,Path.Combine(directory,"reset-inventory-light.png"));resetWindow.Close();Click(dashboard,"Theme.Toggle.Main");controller.Seed(baseline.Select(a=>a.Profile.Id==resetAccount.Profile.Id?a with {Snapshot=a.Snapshot! with {ResetCredits=null,ResetCreditsError="Synthetic unavailable inventory"}}:a));resetWindow=dashboard.CreateResetCreditsWindow(resetAccount.Profile.Id)!;resetWindow.Show();await Task.Delay(60);Capture(resetWindow,Path.Combine(directory,"reset-inventory-unavailable.png"));resetWindow.Close();
         controller.Seed(baseline);
     }
+    public static async Task CaptureLanguagesAsync(string directory,DockController controller,Dashboard dashboard)
+    {
+        var original=controller.Settings;var originalTheme=Ui.Light;
+        foreach(var code in new[]{"pl","en","de","fr","es"})
+        {
+            var target=Path.Combine(directory,code);Directory.CreateDirectory(target);
+            controller.SetSettings(controller.Settings with {Language=code});Localization.SetLanguage(code);
+            dashboard.SelectTab("Ustawienia");dashboard.UpdateLayout();if(Find<System.Windows.Controls.Button>(dashboard,"Settings.Revert").IsEnabled)Click(dashboard,"Settings.Revert");
+            await CaptureAsync(target,controller,dashboard);
+            dashboard.SelectTab("Ustawienia");dashboard.UpdateLayout();
+            var selector=Find<System.Windows.Controls.ComboBox>(dashboard,"Settings.Language");selector.IsDropDownOpen=true;await Task.Delay(60);
+            var popup=(System.Windows.Controls.Primitives.Popup)selector.Template.FindName("PART_Popup",selector);
+            var popupContent=(FrameworkElement)popup.Child;popupContent.UpdateLayout();
+            var bitmap=new RenderTargetBitmap((int)Math.Ceiling(popupContent.ActualWidth),(int)Math.Ceiling(popupContent.ActualHeight),96,96,PixelFormats.Pbgra32);bitmap.Render(popupContent);
+            var encoder=new PngBitmapEncoder();encoder.Frames.Add(BitmapFrame.Create(bitmap));using(var stream=File.Create(Path.Combine(target,"language-options.png")))encoder.Save(stream);
+            selector.IsDropDownOpen=false;
+        }
+        controller.SetSettings(original);Localization.SetLanguage(original.Language);Ui.Theme(originalTheme);dashboard.Build();
+    }
     private static void Capture(Window window,string path,Size? renderSize=null,Action? inspectLayout=null)
     {
         window.UpdateLayout();
@@ -101,6 +120,7 @@ internal static class Verification
         try
         {
             dashboard.UpdateLayout();foreach(var tab in new[]{"Statystyki","Historia","Ustawienia","Konta"}){var button=Find<System.Windows.Controls.Button>(dashboard,"Nav."+tab);button.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));dashboard.UpdateLayout();Assert(Descendants<System.Windows.Controls.TextBlock>(dashboard).Any(t=>tab=="Konta"?t.Text=="Nazwa":t.Text.StartsWith(tab)),"tab "+tab,report);}
+            CheckLanguageSwitch(controller,dashboard,report);
             CheckCaptureConstraints(dashboard,Path.GetDirectoryName(output)!,report);
             CheckThemeControls(controller,dashboard,report);
             CheckResetPresentation(controller,dashboard,report);
@@ -108,6 +128,8 @@ internal static class Verification
             var search=Descendants<System.Windows.Controls.TextBox>(dashboard).First();search.Text="Produkcja";dashboard.UpdateLayout();Assert(Descendants<System.Windows.Controls.TextBlock>(dashboard).Any(t=>t.Text=="Produkcja")&&!Descendants<System.Windows.Controls.TextBlock>(dashboard).Any(t=>t.Text=="Prywatne"),"search UI event",report);search.Text="";dashboard.UpdateLayout();
             var pin=Descendants<System.Windows.Controls.Button>(dashboard).First(b=>System.Windows.Automation.AutomationProperties.GetName(b)=="Usuń z widgetu");var favorites=controller.Accounts.Count(a=>a.Profile.IsFavorite);pin.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));Assert(controller.Accounts.Count(a=>a.Profile.IsFavorite)==favorites-1,"favorite UI event",report);
             Assert(Dashboard.WindowLabel("Codex - 5 hours")=="Limit 5 h"&&Dashboard.WindowLabel("Codex - 7 days")=="Tygodniowy"&&Dashboard.WindowLabel("Unknown window")=="Unknown window","real Codex window names preserve meaning",report);
+            Assert(Dashboard.WindowLabel("Opus - 7 days")=="Opus · Tygodniowy"&&Dashboard.WindowLabel("Sonnet - 7 days")=="Sonnet · Tygodniowy"&&Dashboard.WindowLabel("OAuth apps - 7 days")=="OAuth apps · Tygodniowy","provider model prefixes retain localized weekly duration",report);
+            Assert(Dashboard.WindowLabel("Review - 5 hours")=="Review · Limit 5 h"&&Dashboard.WindowLabel("Unknown - 2 days")=="Unknown - 2 days","additional Codex duration localized without changing unknown windows",report);
             var before=controller.Accounts.Count;var id=Guid.NewGuid();var profile=new ConnectionProfile(id,"Smoke account",ProviderKind.ClaudeOAuth);
             controller.Save(profile,"fixture-credential");Assert(controller.Accounts.Count==before+1,"add",report);dashboard.UpdateLayout();Assert(Descendants<System.Windows.Controls.TextBlock>(dashboard).Any(t=>t.Text.StartsWith($"{before+1} ")&&t.Text.EndsWith(" · DEMO")),"footer count updates after add",report);
             controller.Save(profile with{Name="Renamed smoke"},null);Assert(controller.Accounts.Single(a=>a.Profile.Id==id).Profile.Name=="Renamed smoke","edit",report);
@@ -125,6 +147,49 @@ internal static class Verification
             report.Add($"PASS: {report.Count} checks; offline synthetic data; no real account or storage access.");File.WriteAllLines(output,report);return true;
         }
         catch(Exception error){report.Add("FAIL: "+error.Message);File.WriteAllLines(output,report);return false;}
+    }
+    private static void CheckLanguageSwitch(DockController controller,Dashboard dashboard,List<string> report)
+    {
+        var original=controller.Settings;
+        dashboard.SelectTab("Ustawienia");dashboard.UpdateLayout();
+        var language=Find<System.Windows.Controls.ComboBox>(dashboard,"Settings.Language");
+        Assert(language.Items.Count==6,"language selector has Auto and five native language names",report);
+        Find<System.Windows.Controls.TextBox>(dashboard,"Settings.Interval").Text="777";
+        var widget=new Widget(controller,dashboard);widget.Show();
+        var reset=dashboard.CreateResetCreditsWindow(controller.Accounts.First(a=>a.Profile.Provider==ProviderKind.Codex).Profile.Id)!;reset.Show();
+        var editor=new ConnectionEditor(controller,new ConnectionProfile(Guid.NewGuid(),"Untranslated name",ProviderKind.OpenAiApi,MonthlyBudget:24.86m));editor.Show();editor.UpdateLayout();
+        Find<System.Windows.Controls.PasswordBox>(editor,"Editor.Secret").Password="offline-fixture";
+        try
+        {
+            foreach(var code in new[]{"en","de","fr","es","pl"})
+            {
+                Find<System.Windows.Controls.ComboBox>(dashboard,"Settings.Language").SelectedValue=code;
+                dashboard.UpdateLayout();widget.UpdateLayout();editor.UpdateLayout();reset.UpdateLayout();
+                Assert(Text(reset).Contains(Ui.L("Jeden zapasowy reset może odnowić wykorzystane okna Codex 5 h i tygodniowe. Zostanie zużyty dopiero po Twoim potwierdzeniu.")),"open reset dialog language updates "+code,report);
+                var selector=Find<System.Windows.Controls.ComboBox>(dashboard,"Settings.Language");selector.IsDropDownOpen=true;dashboard.UpdateLayout();dashboard.Dispatcher.Invoke(()=>{},System.Windows.Threading.DispatcherPriority.Background);
+                var popup=(System.Windows.Controls.Primitives.Popup)selector.Template.FindName("PART_Popup",selector);
+                Assert(Localization.Languages.All(item=>Text(popup.Child).Contains(item.NativeName)),"language popup renders all native names "+code,report);selector.IsDropDownOpen=false;
+                Assert(Find<System.Windows.Controls.ComboBox>(dashboard,"Settings.Language").SelectedItem.ToString()==Localization.Languages.Single(x=>x.Code==code).NativeName,"selected language renders native name "+code,report);
+                Assert(Find<System.Windows.Controls.TextBox>(editor,"Editor.Name").Text=="Untranslated name"&&Find<System.Windows.Controls.PasswordBox>(editor,"Editor.Secret").Password=="offline-fixture","open editor preserves typed fields "+code,report);
+                Assert(Localization.TryParseBudget(Find<System.Windows.Controls.TextBox>(editor,"Editor.Budget").Text,code,out var amount)&&amount==24.86m,"open editor reformats budget without changing value "+code,report);
+                Assert(Text(widget).Contains(Ui.L("Zawsze na wierzchu"))&&widget.Title==Ui.L("UsageDock · Mini widget"),"open widget language updates "+code,report);
+                using(var menu=App.CreateTrayMenu(()=>{},()=>{},()=>{},()=>{})){Assert(menu.Items[0].Text==Ui.L("Otwórz UsageDock")&&menu.Items[3].Text==Ui.L("Zakończ"),"tray menu localized through production helper "+code,report);}
+                Assert(controller.Settings.Language==code&&Localization.CurrentLanguage==code,"language switch immediately persists "+code,report);
+                Assert(Find<System.Windows.Controls.TextBox>(dashboard,"Settings.Interval").Text=="777"&&controller.Settings.RefreshSeconds==original.RefreshSeconds,"language switch preserves settings draft "+code,report);
+                Assert(Text(dashboard).Contains(Localization.Text("settings.language")),"language label updates "+code,report);
+            }
+            dashboard.SelectTab("Konta");dashboard.UpdateLayout();
+            var search=Find<System.Windows.Controls.TextBox>(dashboard,"Accounts.Search");search.Text="Studio";dashboard.Activate();search.Focus();
+            dashboard.TrySetLanguage("en");dashboard.UpdateLayout();dashboard.Dispatcher.Invoke(()=>{},System.Windows.Threading.DispatcherPriority.Background);
+            Assert(Find<System.Windows.Controls.TextBox>(dashboard,"Accounts.Search").Text=="Studio"&&Find<System.Windows.Controls.TextBox>(dashboard,"Accounts.Search").IsKeyboardFocused,"language switch preserves search and focus",report);
+            Assert(Text(dashboard).Contains("Studio")&&!Text(dashboard).Contains("Prywatne"),"language switch preserves active account filter",report);
+            Find<System.Windows.Controls.TextBox>(dashboard,"Accounts.Search").Text="";
+            dashboard.SelectTab("Historia");dashboard.UpdateLayout();
+            Assert(Text(dashboard).Contains("Settings saved")&&!Text(dashboard).Contains("Zapisano ustawienia"),"existing session history relocalizes from stored descriptors",report);
+            dashboard.SelectTab("Ustawienia");dashboard.UpdateLayout();Click(dashboard,"Settings.Save");dashboard.UpdateLayout();
+            Assert(controller.Settings.Language=="en"&&controller.Settings.RefreshSeconds==777,"saving settings draft retains immediate language",report);
+        }
+        finally{reset.Close();editor.Close();widget.Close();controller.SetSettings(original);Localization.SetLanguage(original.Language);dashboard.SelectTab("Ustawienia");dashboard.UpdateLayout();Click(dashboard,"Settings.Revert");dashboard.SelectTab("Konta");dashboard.UpdateLayout();}
     }
     private static T Find<T>(DependencyObject root,string id) where T:FrameworkElement => Descendants<T>(root).SingleOrDefault(x=>System.Windows.Automation.AutomationProperties.GetAutomationId(x)==id) ?? throw new InvalidOperationException("Missing control: "+id);
     private static void Click(DependencyObject root,string id){var button=Find<System.Windows.Controls.Primitives.ButtonBase>(root,id);if(!button.IsEnabled)throw new InvalidOperationException("Disabled action: "+id);button.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));}

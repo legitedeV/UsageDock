@@ -61,3 +61,14 @@ A focused independent static security review found no new confirmed high/medium 
 The first hosted CI run passed all 100 behavior checks but failed the image-size gate: the Windows runner constrained the native window to 1044 pixels wide. The capture helper now renders the same client control tree in a temporary offscreen host at its explicit fixture size, then restores the live content, inherited typography and keyboard focus. It does not pad a cropped screenshot or weaken the expected dimensions.
 
 A regression first reproduced the failure with a dashboard constrained to 1044 x 640. The final local UI task passed 104 checks, including full 1128 x 756 rendering under that constraint, restoration of the live layout, retained inherited fonts and preserved focus. It produced the 25 standard synthetic renders plus the constrained regression image. Core and normal application behavior are unchanged. A separate read-only review found no blocking issue in this verification-only fix.
+
+## Local 0.5.0 localization verification — 2026-09-06
+
+- Five complete embedded catalogs (pl/en/de/fr/es), 278 entries each; key, placeholder and formatting checks passed.
+- Core task: 196/196 tests; 97.46% line coverage (920/944). Evidence: `artifacts/tests/2bd4accd93234ab6bfdd5fc42139cce2`.
+- Packaged 0.5.0 executable: 161 separate in-process UI checks passed, preserving the previous 104 checks. Evidence: `artifacts/ui/936d64e5c81248c884d5359b5e494569`.
+- UI checks cover live language changes, existing history, settings drafts, search/focus, editor fields and localized budget round-tripping, open reset dialogs, widget titles, tray menu construction and native language names in the actual dropdown popup.
+- Synthetic screenshots cover all five languages, light/dark themes, minimum windows, dashboard tabs, editor, resets and widget. German, French and Spanish button labels were shortened after visual inspection and recaptured from the package.
+- The Inno Setup compiler built the per-user installer with five language files. Installer execution on a clean Windows machine was not tested; the packaged executable itself was tested.
+- Local portable app updated to 0.5.0.0 and launched successfully. Its executable hash matches the verified package; the existing settings file hash was unchanged. No real reset was consumed in verification.
+- These results describe the local pre-release build. Hosted CI and release jobs independently verify the published tag.

@@ -15,3 +15,11 @@ Packaging is performed by `scripts/package.ps1`; optional Inno Setup 6 produces 
 The release workflow downloads the pinned official Inno Setup 6.7.3 compiler, checks SHA-256 and its Authenticode publisher, and extracts it in portable mode under `artifacts/tools`. It does not register a machine-wide compiler installation. To prepare the same compiler locally, run `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\get-inno.ps1`, then pass its printed path to `package.ps1`.
 
 After a Release build, `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify-ui.ps1` runs the synthetic desktop smoke flow and captures the dashboard, editor and widget. Pass `-Executable <path>` to verify a packaged executable. Successful rendering does not replace human inspection of these images or real-account verification.
+
+## Translations
+
+The application embeds UTF-8 JSON catalogs from `src/UsageDock.Core/Localization/`: `pl.json`, `en.json`, `de.json`, `fr.json` and `es.json`. Edit these source files and rebuild; no external translation service or runtime download is used.
+
+Keep the same keys in every catalog and preserve numbered placeholders such as `{0}` and `{1}`. Translate whole messages rather than concatenated fragments. Do not translate provider identifiers, account names, protocol values or currency codes. A reset with an unknown result must remain distinct from a failed reset; an unknown expiry must remain distinct from no expiry.
+
+Use concise natural labels for the desktop widget. Run the Core tests for catalog parity and formatting, then the separate UI verification task and inspect the screenshots in light and dark themes. Pay particular attention to German and French labels at the minimum window size. If adding another language, register its code and native name in `Localization.cs`, provide the complete catalog, add resolution and formatting tests, and update the installer language list.

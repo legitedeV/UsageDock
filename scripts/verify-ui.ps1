@@ -7,9 +7,9 @@ if (!(Test-Path -LiteralPath $Executable)) { throw 'Build the application first 
 $output = Join-Path $root ('artifacts/ui/' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $output -Force | Out-Null
 $report = Join-Path $output 'smoke.txt'
-foreach ($arguments in @(@('--demo', '--smoke-test', ('"' + $report + '"')), @('--demo', '--screenshot', ('"' + $output + '"')))) {
+foreach ($arguments in @(@('--demo', '--smoke-test', ('"' + $report + '"')), @('--demo', '--all-languages', '--screenshot', ('"' + $output + '"')))) {
     $process = Start-Process -FilePath $Executable -ArgumentList $arguments -WindowStyle Hidden -PassThru
-    if (!$process.WaitForExit(30000)) {
+    if (!$process.WaitForExit(60000)) {
         Stop-Process -Id $process.Id -Force
         throw 'UI verification timed out.'
     }
@@ -20,7 +20,7 @@ $reportText = Get-Content -LiteralPath $report -Raw
 if ([string]::IsNullOrWhiteSpace($reportText) -or $reportText -match 'FAIL:') { throw 'Smoke report is empty or contains a failure.' }
 $checks = @([regex]::Matches($reportText, '(?m)^PASS: (?![0-9]+ checks;).+'))
 $summary = [regex]::Match($reportText, '(?m)^PASS: ([0-9]+) checks;')
-if (!$summary.Success -or [int]$summary.Groups[1].Value -lt 104 -or $checks.Count -ne [int]$summary.Groups[1].Value) { throw 'Smoke report lacks the expected passing checks.' }
+if (!$summary.Success -or [int]$summary.Groups[1].Value -lt 161 -or $checks.Count -ne [int]$summary.Groups[1].Value) { throw 'Smoke report lacks the expected passing checks.' }
 foreach ($image in @('dashboard-dark.png','widget-dark.png','widget-light.png','connection-editor.png','dashboard-light.png','dashboard-minimum.png','main-client.png','widget-client.png','statistics-dark.png','history-dark.png','settings-dark.png','statistics-light.png','history-light.png','settings-light.png','statistics-minimum.png','history-minimum.png','settings-minimum.png','statistics-unavailable.png','statistics-empty.png','history-empty.png','settings-invalid.png','accounts-longnames.png','reset-inventory.png','reset-inventory-light.png','reset-inventory-unavailable.png')) {
     $path = Join-Path $output $image
     if (!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).Length -lt 100) { throw "Missing render: $image" }
@@ -33,6 +33,12 @@ foreach ($target in @(@{ Name = 'main-client.png'; Width = 1128; Height = 756 },
             throw "Unexpected client render dimensions: $($target.Name) is $($render.Width)x$($render.Height)."
         }
     } finally { $render.Dispose() }
+}
+foreach ($language in @('pl','en','de','fr','es')) {
+    foreach ($image in @('dashboard-dark.png','dashboard-light.png','settings-dark.png','settings-light.png','widget-dark.png','widget-light.png','connection-editor.png','reset-inventory.png','history-dark.png','settings-minimum.png','accounts-longnames.png','language-options.png')) {
+        $path = Join-Path $output ($language + '/' + $image)
+        if (!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).Length -lt 100) { throw "Missing localized render: $language/$image" }
+    }
 }
 Get-Content -LiteralPath $report
 Write-Host "UI artifacts: $output"

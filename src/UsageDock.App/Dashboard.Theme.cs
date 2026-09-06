@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -17,7 +17,7 @@ public sealed partial class Dashboard
         {
             draftTheme = controller.Settings.Theme;
             Build();
-            const string message = "Nie udało się zapisać motywu. Spróbuj ponownie.";
+            var message = Ui.L("Nie udało się zapisać motywu. Spróbuj ponownie.");
             if (tab == "Ustawienia" && settingsStatus != null)
             {
                 settingsStatus.Text = message;
@@ -27,7 +27,7 @@ public sealed partial class Dashboard
             return false;
         }
         draftTheme = theme;
-        savedMessage = "Motyw zapisany";
+        savedMessage = Ui.L("Motyw zapisany");
         Ui.Theme(light);
         Build();
         return true;
@@ -36,14 +36,14 @@ public sealed partial class Dashboard
     internal Button ThemeButton(string automationId, bool compact)
     {
         var button = Design.Action(Ui.Light ? "moon" : "sun",
-            Ui.Light ? "Włącz ciemny motyw" : "Włącz jasny motyw",
+            Ui.Light ? Ui.L("Włącz ciemny motyw") : Ui.L("Włącz jasny motyw"),
             () => { },
             compact ? 28 : 108, compact ? 30 : 40, false, compact);
         if (!compact)
         {
             var content = new StackPanel { Orientation = Orientation.Horizontal };
             content.Children.Add(Design.Icon(Ui.Light ? "moon" : "sun", 18, Ui.Muted));
-            content.Children.Add(new TextBlock { Text = Ui.Light ? "Ciemny" : "Jasny", FontSize = 14,
+            content.Children.Add(new TextBlock { Text = Ui.Light ? Ui.L("Ciemny") : Ui.L("Jasny"), FontSize = 14,
                 Margin = new Thickness(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center });
             button.Content = content;
         }

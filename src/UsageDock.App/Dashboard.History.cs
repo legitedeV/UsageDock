@@ -47,11 +47,11 @@ public sealed partial class Dashboard
     }
     private UIElement HistoryPanel()
     {
-        var page = Page("Historia", "Zdarzenia z bieżącej sesji aplikacji. Zachowujemy ostatnie 100 wpisów; po zamknięciu historia jest czyszczona.");
+        var page = Page("Historia", Ui.L("Zdarzenia z bieżącej sesji aplikacji. Zachowujemy ostatnie 100 wpisów; po zamknięciu historia jest czyszczona."));
         var toolbar = Columns(-1, 160);
         toolbar.Margin = new Thickness(0, 0, 0, 20);
         var filters = new StackPanel { Orientation = Orientation.Horizontal };
-        foreach (var (key, label) in new[] { ("All", "Wszystkie"), ("Reads", "Odczyty"), ("Problems", "Problemy") })
+        foreach (var (key, label) in new[] { ("All", Ui.L("Wszystkie")), ("Reads", Ui.L("Odczyty")), ("Problems", Ui.L("Problemy")) })
         {
             var button = Identify(Ui.Button(label, () => { historyFilter = key; Repaint(); RestoreFocus("History.Filter." + key); }), "History.Filter." + key);
             button.Height = 38;
@@ -59,14 +59,14 @@ public sealed partial class Dashboard
             filters.Children.Add(button);
         }
         Cell(toolbar, filters, 0);
-        var clear = Identify(Ui.Button("Wyczyść sesję", () => { history = Array.Empty<SessionEvent>(); Repaint(); }), "History.Clear");
+        var clear = Identify(Ui.Button(Ui.L("Wyczyść sesję"), () => { history = Array.Empty<SessionEvent>(); Repaint(); }), "History.Clear");
         clear.IsEnabled = history.Count > 0;
         clear.Height = 38;
         Cell(toolbar, clear, 1);
         page.Children.Add(toolbar);
         var headings = Columns(112, 124, 228, -1);
         headings.Margin = new Thickness(18, 0, 18, 12);
-        foreach (var (label, column) in new[] { ("Czas", 0), ("Zdarzenie", 1), ("Konto", 2), ("Szczegóły", 3) })
+        foreach (var (label, column) in new[] { (Ui.L("Czas"), 0), (Ui.L("Zdarzenie"), 1), (Ui.L("Konto"), 2), (Ui.L("Szczegóły"), 3) })
             Cell(headings, Truncated(label, 13, Ui.Muted), column);
         page.Children.Add(headings);
         var entries = Identify(new StackPanel(), "History.Entries");
@@ -76,15 +76,15 @@ public sealed partial class Dashboard
             var row = Columns(112, 124, 228, -1);
             row.Margin = new Thickness(18, 17, 18, 17);
             Cell(row, Truncated(entry.At.ToString("HH:mm:ss"), 13, Ui.Muted), 0);
-            Cell(row, Truncated(entry.Kind switch { "Problems" => "Problem", "Reads" => "Odczyt", "Settings" => "Ustawienia", "Session" => "Odświeżanie", _ => "Połączenie" }, 13, entry.Kind == "Problems" ? Warning : Ui.Accent), 1);
-            var account = Truncated(entry.Account); account.Margin = new Thickness(0, 0, 16, 0);
+            Cell(row, Truncated(entry.Kind switch { "Problems" => Ui.L("Problem"), "Reads" => Ui.L("Odczyt"), "Settings" => Ui.L("Ustawienia"), "Session" => Ui.L("Odświeżanie"), _ => Ui.L("Połączenie") }, 13, entry.Kind == "Problems" ? Warning : Ui.Accent), 1);
+            var account = Truncated(entry.Kind is "Session" or "Settings" ? Ui.L(entry.Account) : entry.Account); account.Margin = new Thickness(0, 0, 16, 0);
             Cell(row, account, 2);
-            Cell(row, new TextBlock { Text = entry.Description, Foreground = Ui.Muted, FontSize = 14, TextWrapping = TextWrapping.Wrap }, 3);
+            Cell(row, new TextBlock { Text = Ui.L(entry.Description), Foreground = Ui.Muted, FontSize = 14, TextWrapping = TextWrapping.Wrap }, 3);
             entries.Children.Add(new Border { Child = row, BorderBrush = Design.Line, BorderThickness = new Thickness(0, 0, 0, 1) });
         }
         page.Children.Add(new Border { Child = entries, Background = Ui.Surface, CornerRadius = new CornerRadius(8) });
         if (filtered.Length == 0)
-            page.Children.Add(Identify(Surface(Ui.Stack(Ui.Label("Brak zdarzeń", 18), Ui.Label(historyFilter == "All" ? "Nowe odczyty i zmiany połączeń pojawią się tutaj." : "W tej sesji nie ma zdarzeń wybranego rodzaju.", 14, Ui.Muted))), "History.Empty"));
+            page.Children.Add(Identify(Surface(Ui.Stack(Ui.Label(Ui.L("Brak zdarzeń"), 18), Ui.Label(historyFilter == "All" ? Ui.L("Nowe odczyty i zmiany połączeń pojawią się tutaj.") : Ui.L("W tej sesji nie ma zdarzeń wybranego rodzaju."), 14, Ui.Muted))), "History.Empty"));
         return page;
     }
 }
