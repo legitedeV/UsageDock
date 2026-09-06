@@ -1,0 +1,18 @@
+name: Feature request
+description: Suggest an improvement to the desktop app or widget.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: Describe the problem and the outcome you need.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Include alternatives you considered. Please use synthetic account data.
+    validations:
+      required: true

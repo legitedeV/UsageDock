@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/legitedeV/UsageDock/security/advisories/new
+    about: Report vulnerabilities privately. Never post credentials in an issue.
+  - name: Setup instructions (Polish)
+    url: https://github.com/legitedeV/UsageDock/blob/main/docs/GETTING_STARTED_PL.md
+    about: Installation, connections, themes and banked resets.

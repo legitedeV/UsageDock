@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible problem with UsageDock.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Use synthetic examples. Never include credentials, authorization headers, raw provider responses or private account screenshots. Report security issues privately through the Security tab."
+  - type: input
+    id: version
+    attributes:
+      label: UsageDock version
+      placeholder: "0.4.0"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Windows version and display scaling
+      placeholder: "Windows 11, 125% scaling"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include what you expected and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Provider type, sanitized error text or a screenshot using demo data.
