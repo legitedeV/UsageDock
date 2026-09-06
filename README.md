@@ -3,7 +3,7 @@
 <p align="center">Claude and Codex limits, banked resets, and API spending — in a native Windows dashboard and pinned widget.</p>
 
 <p align="center">
-  <a href="https://github.com/legitedeV/UsageDock/actions/workflows/ci.yml"><img src="https://github.com/legitedeV/UsageDock/actions/workflows/ci.yml/badge.svg" alt="Windows build and tests"></a>
+  <a href="https://github.com/legitedeV/UsageDock/actions/workflows/ci.yml"><img src="https://github.com/legitedeV/UsageDock/actions/workflows/ci.yml/badge.svg?branch=main" alt="Windows build and tests"></a>
   <a href="https://github.com/legitedeV/UsageDock/releases/latest"><img src="https://img.shields.io/github/v/release/legitedeV/UsageDock?color=16866d&amp;label=release" alt="Latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16866d" alt="MIT license"></a>
   <img src="https://img.shields.io/badge/Windows_11-x64-16866d" alt="Windows 11 x64">
@@ -128,7 +128,7 @@ Bug reports, integration fixes, accessibility improvements and documentation con
 <summary>Package a release or regenerate the animated tour</summary>
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package.ps1 -Version 0.4.0
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\package.ps1 -Version 0.4.1
 ```
 
 The portable package is self-contained. To build the installer too, pass `-InnoSetupCompiler` with the path to Inno Setup 6 and add `-RequireInstaller`. The release workflow validates a version tag, builds and tests on Windows, and prepares a draft release.

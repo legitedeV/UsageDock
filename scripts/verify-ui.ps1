@@ -20,7 +20,7 @@ $reportText = Get-Content -LiteralPath $report -Raw
 if ([string]::IsNullOrWhiteSpace($reportText) -or $reportText -match 'FAIL:') { throw 'Smoke report is empty or contains a failure.' }
 $checks = @([regex]::Matches($reportText, '(?m)^PASS: (?![0-9]+ checks;).+'))
 $summary = [regex]::Match($reportText, '(?m)^PASS: ([0-9]+) checks;')
-if (!$summary.Success -or [int]$summary.Groups[1].Value -lt 100 -or $checks.Count -ne [int]$summary.Groups[1].Value) { throw 'Smoke report lacks the expected passing checks.' }
+if (!$summary.Success -or [int]$summary.Groups[1].Value -lt 104 -or $checks.Count -ne [int]$summary.Groups[1].Value) { throw 'Smoke report lacks the expected passing checks.' }
 foreach ($image in @('dashboard-dark.png','widget-dark.png','widget-light.png','connection-editor.png','dashboard-light.png','dashboard-minimum.png','main-client.png','widget-client.png','statistics-dark.png','history-dark.png','settings-dark.png','statistics-light.png','history-light.png','settings-light.png','statistics-minimum.png','history-minimum.png','settings-minimum.png','statistics-unavailable.png','statistics-empty.png','history-empty.png','settings-invalid.png','accounts-longnames.png','reset-inventory.png','reset-inventory-light.png','reset-inventory-unavailable.png')) {
     $path = Join-Path $output $image
     if (!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).Length -lt 100) { throw "Missing render: $image" }

@@ -55,3 +55,9 @@ The final development-build UI task passed 100 checks. These include exact date/
 A read-only live acceptance probe using the new provider code successfully retrieved usage and reset inventory for one configured Codex account. Another configured account did not grant usage access. No real reset was consumed. Actual redemption is verified with synthetic HTTP/controller fixtures; provider-side idempotency and eligibility remain external dependencies.
 
 A focused independent static security review found no new confirmed high/medium issues in the reset path. The application persists only the request/credit identifiers and an account binding for unresolved operations, never the credential in that journal. Unknown outcomes retain the same request identity. Local account settings and credentials are preserved by the desktop update.
+
+## Version 0.4.1 CI-independent render sizing (2026-09-06)
+
+The first hosted CI run passed all 100 behavior checks but failed the image-size gate: the Windows runner constrained the native window to 1044 pixels wide. The capture helper now renders the same client control tree in a temporary offscreen host at its explicit fixture size, then restores the live content, inherited typography and keyboard focus. It does not pad a cropped screenshot or weaken the expected dimensions.
+
+A regression first reproduced the failure with a dashboard constrained to 1044 x 640. The final local UI task passed 104 checks, including full 1128 x 756 rendering under that constraint, restoration of the live layout, retained inherited fonts and preserved focus. It produced the 25 standard synthetic renders plus the constrained regression image. Core and normal application behavior are unchanged. A separate read-only review found no blocking issue in this verification-only fix.

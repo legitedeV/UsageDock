@@ -1,8 +1,18 @@
 # Changelog
 
+## 0.4.1 — 2026-09-06
+
+First public downloadable release.
+
+- Reproducible screenshot rendering on CI machines with smaller virtual displays.
+- Animated README tour, light/dark previews and accessible still-image alternatives.
+- Issue forms, pull request template and private vulnerability reporting.
+
+All application features from 0.4.0 are included.
+
 ## 0.4.0 — 2026-09-06
 
-First public release of UsageDock for Windows 11 x64.
+Initial desktop build of UsageDock for Windows 11 x64.
 
 - Multiple Claude and Codex connections in a native dashboard and pinned desktop widget.
 - API costs and reported tokens, with optional local budgets and workspace/project filters.

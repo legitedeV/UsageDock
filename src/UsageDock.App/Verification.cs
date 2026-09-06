@@ -32,29 +32,68 @@ internal static class Verification
     {
         Directory.CreateDirectory(directory);
         var baseline=controller.Accounts.ToArray();
+        var dashboardSize=new Size(1128,756);
+        void CaptureDashboard(string name)=>Capture(dashboard,Path.Combine(directory,name),dashboardSize);
         foreach(var light in new[]{false,true})
         {
             if(Ui.Light!=light)Click(dashboard,"Theme.Toggle.Main");dashboard.Width=1128;dashboard.Height=756;dashboard.SelectTab("Konta");await Task.Delay(60);
-            Capture(dashboard,Path.Combine(directory,light?"dashboard-light.png":"dashboard-dark.png"));
-            if(!light){Capture(dashboard,Path.Combine(directory,"main-client.png"));var widget=new Widget(controller,dashboard);widget.Show();await Task.Delay(60);Capture(widget,Path.Combine(directory,"widget-dark.png"));Capture(widget,Path.Combine(directory,"widget-client.png"));widget.Close();var editor=new ConnectionEditor(controller,null);editor.Show();await Task.Delay(60);Capture(editor,Path.Combine(directory,"connection-editor.png"));editor.Close();}
-            if(light){var widget=new Widget(controller,dashboard);widget.Show();await Task.Delay(60);Capture(widget,Path.Combine(directory,"widget-light.png"));widget.Close();}
+            CaptureDashboard(light?"dashboard-light.png":"dashboard-dark.png");
+            if(!light){CaptureDashboard("main-client.png");var widget=new Widget(controller,dashboard);widget.Show();await Task.Delay(60);Capture(widget,Path.Combine(directory,"widget-dark.png"),new Size(268,548));Capture(widget,Path.Combine(directory,"widget-client.png"),new Size(268,548));widget.Close();var editor=new ConnectionEditor(controller,null);editor.Show();await Task.Delay(60);Capture(editor,Path.Combine(directory,"connection-editor.png"));editor.Close();}
+            if(light){var widget=new Widget(controller,dashboard);widget.Show();await Task.Delay(60);Capture(widget,Path.Combine(directory,"widget-light.png"),new Size(268,548));widget.Close();}
             controller.Seed(baseline.Select((a,i)=>a with {Snapshot=a.Snapshot! with {FetchedAt=a.Snapshot!.FetchedAt.AddSeconds(light?2:1)}}));
             controller.Seed(controller.Accounts.Select((a,i)=>i==1?a with {Error="Synthetic demo read failure"}:a));
-            foreach(var pair in new[]{("Statystyki","statistics"),("Historia","history"),("Ustawienia","settings")}){dashboard.SelectTab(pair.Item1);await Task.Delay(60);Capture(dashboard,Path.Combine(directory,pair.Item2+(light?"-light.png":"-dark.png")));}
+            foreach(var pair in new[]{("Statystyki","statistics"),("Historia","history"),("Ustawienia","settings")}){dashboard.SelectTab(pair.Item1);await Task.Delay(60);CaptureDashboard(pair.Item2+(light?"-light.png":"-dark.png"));}
         }
-        if(Ui.Light)Click(dashboard,"Theme.Toggle.Main");dashboard.Width=960;dashboard.Height=580;
-        foreach(var pair in new[]{("Konta","dashboard"),("Statystyki","statistics"),("Historia","history"),("Ustawienia","settings")}){dashboard.SelectTab(pair.Item1);await Task.Delay(60);Capture(dashboard,Path.Combine(directory,pair.Item2+"-minimum.png"));}
-        dashboard.Width=1128;dashboard.Height=756;controller.Seed(baseline.Select(a=>a with {Snapshot=null,Error="Synthetic demo read failure"}));dashboard.SelectTab("Statystyki");await Task.Delay(60);Capture(dashboard,Path.Combine(directory,"statistics-unavailable.png"));
-        controller.Seed(Array.Empty<AccountView>());dashboard.SelectTab("Statystyki");await Task.Delay(60);Capture(dashboard,Path.Combine(directory,"statistics-empty.png"));
-        dashboard.SelectTab("Historia");dashboard.UpdateLayout();Click(dashboard,"History.Clear");await Task.Delay(60);Capture(dashboard,Path.Combine(directory,"history-empty.png"));
-        dashboard.SelectTab("Ustawienia");dashboard.UpdateLayout();Find<System.Windows.Controls.TextBox>(dashboard,"Settings.Interval").Text="30";await Task.Delay(60);Capture(dashboard,Path.Combine(directory,"settings-invalid.png"));
-        controller.Seed(baseline.Select((a,i)=>a with {Profile=a.Profile with {Name=new[]{"Claude — prywatne konto robocze","Codex — Workspace produkcyjny","OpenAI — obszar zespołu aplikacji","Anthropic — badania i rozwój"}[i]}}));dashboard.SelectTab("Konta");await Task.Delay(60);Capture(dashboard,Path.Combine(directory,"accounts-longnames.png"));
+        if(Ui.Light)Click(dashboard,"Theme.Toggle.Main");dashboard.Width=960;dashboard.Height=580;dashboardSize=new Size(960,580);
+        foreach(var pair in new[]{("Konta","dashboard"),("Statystyki","statistics"),("Historia","history"),("Ustawienia","settings")}){dashboard.SelectTab(pair.Item1);await Task.Delay(60);CaptureDashboard(pair.Item2+"-minimum.png");}
+        dashboard.Width=1128;dashboard.Height=756;dashboardSize=new Size(1128,756);controller.Seed(baseline.Select(a=>a with {Snapshot=null,Error="Synthetic demo read failure"}));dashboard.SelectTab("Statystyki");await Task.Delay(60);CaptureDashboard("statistics-unavailable.png");
+        controller.Seed(Array.Empty<AccountView>());dashboard.SelectTab("Statystyki");await Task.Delay(60);CaptureDashboard("statistics-empty.png");
+        dashboard.SelectTab("Historia");dashboard.UpdateLayout();Click(dashboard,"History.Clear");await Task.Delay(60);CaptureDashboard("history-empty.png");
+        dashboard.SelectTab("Ustawienia");dashboard.UpdateLayout();Find<System.Windows.Controls.TextBox>(dashboard,"Settings.Interval").Text="30";await Task.Delay(60);CaptureDashboard("settings-invalid.png");
+        controller.Seed(baseline.Select((a,i)=>a with {Profile=a.Profile with {Name=new[]{"Claude — prywatne konto robocze","Codex — Workspace produkcyjny","OpenAI — obszar zespołu aplikacji","Anthropic — badania i rozwój"}[i]}}));dashboard.SelectTab("Konta");await Task.Delay(60);CaptureDashboard("accounts-longnames.png");
         var resetAccount=baseline.First(a=>a.Profile.Provider==ProviderKind.Codex);controller.Seed(baseline);var resetWindow=dashboard.CreateResetCreditsWindow(resetAccount.Profile.Id)!;resetWindow.Show();await Task.Delay(60);Capture(resetWindow,Path.Combine(directory,"reset-inventory.png"));resetWindow.Close();Click(dashboard,"Theme.Toggle.Main");resetWindow=dashboard.CreateResetCreditsWindow(resetAccount.Profile.Id)!;resetWindow.Show();await Task.Delay(60);Capture(resetWindow,Path.Combine(directory,"reset-inventory-light.png"));resetWindow.Close();Click(dashboard,"Theme.Toggle.Main");controller.Seed(baseline.Select(a=>a.Profile.Id==resetAccount.Profile.Id?a with {Snapshot=a.Snapshot! with {ResetCredits=null,ResetCreditsError="Synthetic unavailable inventory"}}:a));resetWindow=dashboard.CreateResetCreditsWindow(resetAccount.Profile.Id)!;resetWindow.Show();await Task.Delay(60);Capture(resetWindow,Path.Combine(directory,"reset-inventory-unavailable.png"));resetWindow.Close();
         controller.Seed(baseline);
     }
-    private static void Capture(Window window,string path)
+    private static void Capture(Window window,string path,Size? renderSize=null,Action? inspectLayout=null)
     {
-        window.UpdateLayout();var content=(FrameworkElement)window.Content;var bitmap=new RenderTargetBitmap((int)content.ActualWidth,(int)content.ActualHeight,96,96,PixelFormats.Pbgra32);var background=new DrawingVisual();using(var drawing=background.RenderOpen())drawing.DrawRectangle(window.Background,null,new Rect(0,0,content.ActualWidth,content.ActualHeight));bitmap.Render(background);bitmap.Render(content);var encoder=new PngBitmapEncoder();encoder.Frames.Add(BitmapFrame.Create(bitmap));using var stream=File.Create(path);encoder.Save(stream);
+        window.UpdateLayout();
+        var content=(FrameworkElement)window.Content;
+        var previousSize=content.RenderSize;
+        var previousSlot=System.Windows.Controls.Primitives.LayoutInformation.GetLayoutSlot(content);
+        var target=renderSize??previousSize;
+        var focused=System.Windows.Input.Keyboard.FocusedElement;
+        var host=new System.Windows.Controls.ContentControl{Width=target.Width,Height=target.Height,FontFamily=window.FontFamily,FontSize=window.FontSize,FontStyle=window.FontStyle,FontWeight=window.FontWeight,FontStretch=window.FontStretch,Foreground=window.Foreground,FlowDirection=window.FlowDirection,DataContext=window.DataContext,HorizontalContentAlignment=HorizontalAlignment.Stretch,VerticalContentAlignment=VerticalAlignment.Stretch};
+        try
+        {
+            // Render the actual client tree at the declared fixture size. Native desktop
+            // work-area constraints must not crop or rescale a verification artifact.
+            window.Content=null;
+            window.UpdateLayout();
+            host.Content=content;
+            host.Measure(target);
+            host.Arrange(new Rect(target));
+            host.UpdateLayout();
+            if(content.RenderSize!=target)throw new InvalidOperationException("Client layout did not accept the requested capture size.");
+            inspectLayout?.Invoke();
+            var bitmap=new RenderTargetBitmap((int)target.Width,(int)target.Height,96,96,PixelFormats.Pbgra32);
+            var background=new DrawingVisual();
+            using(var drawing=background.RenderOpen())drawing.DrawRectangle(window.Background,null,new Rect(target));
+            bitmap.Render(background);bitmap.Render(content);
+            var encoder=new PngBitmapEncoder();encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using var stream=File.Create(path);encoder.Save(stream);
+        }
+        finally
+        {
+            host.Content=null;
+            host.UpdateLayout();
+            window.Content=content;
+            content.Measure(previousSize);
+            content.Arrange(previousSlot);
+            window.UpdateLayout();
+            if(focused is UIElement element&&element.IsVisible)element.Focus();
+
+            window.UpdateLayout();
+        }
     }
     public static async Task<bool> SmokeAsync(string output,DockController controller,Dashboard dashboard)
     {
@@ -62,6 +101,7 @@ internal static class Verification
         try
         {
             dashboard.UpdateLayout();foreach(var tab in new[]{"Statystyki","Historia","Ustawienia","Konta"}){var button=Find<System.Windows.Controls.Button>(dashboard,"Nav."+tab);button.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));dashboard.UpdateLayout();Assert(Descendants<System.Windows.Controls.TextBlock>(dashboard).Any(t=>tab=="Konta"?t.Text=="Nazwa":t.Text.StartsWith(tab)),"tab "+tab,report);}
+            CheckCaptureConstraints(dashboard,Path.GetDirectoryName(output)!,report);
             CheckThemeControls(controller,dashboard,report);
             CheckResetPresentation(controller,dashboard,report);
             CheckTabs(controller,dashboard,report);
@@ -89,6 +129,21 @@ internal static class Verification
     private static T Find<T>(DependencyObject root,string id) where T:FrameworkElement => Descendants<T>(root).SingleOrDefault(x=>System.Windows.Automation.AutomationProperties.GetAutomationId(x)==id) ?? throw new InvalidOperationException("Missing control: "+id);
     private static void Click(DependencyObject root,string id){var button=Find<System.Windows.Controls.Primitives.ButtonBase>(root,id);if(!button.IsEnabled)throw new InvalidOperationException("Disabled action: "+id);button.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));}
     private static string Text(DependencyObject root)=>string.Join(" | ",Descendants<System.Windows.Controls.TextBlock>(root).Select(t=>t.Text));
+    private static void CheckCaptureConstraints(Dashboard dashboard,string directory,List<string> report)
+    {
+        var originalMaxWidth=dashboard.MaxWidth;var originalMaxHeight=dashboard.MaxHeight;var width=dashboard.Width;var height=dashboard.Height;
+        try
+        {
+            dashboard.MaxWidth=1044;dashboard.MaxHeight=640;dashboard.Width=1128;dashboard.Height=756;dashboard.UpdateLayout();
+            var content=(FrameworkElement)dashboard.Content;var before=content.RenderSize;var path=Path.Combine(directory,"constrained-capture.png");
+            var focus=Find<System.Windows.Controls.Button>(dashboard,"Nav.Konta");dashboard.Activate();focus.Focus();var text=Descendants<System.Windows.Controls.TextBlock>(content).First();var font=text.FontFamily;
+            Capture(dashboard,path,new Size(1128,756),()=>Assert(text.FontFamily.Equals(font),"capture preserves inherited typography",report));using var stream=File.OpenRead(path);var png=new PngBitmapDecoder(stream,BitmapCreateOptions.None,BitmapCacheOption.OnLoad);
+            Assert(png.Frames[0].PixelWidth==1128&&png.Frames[0].PixelHeight==756,"capture target resolution ignores native window constraints",report);
+            Assert(content.RenderSize==before&&ReferenceEquals(dashboard.Content,content),"capture restores live content layout",report);
+            Assert(focus.IsKeyboardFocused,"capture restores keyboard focus",report);
+        }
+        finally{dashboard.MaxWidth=originalMaxWidth;dashboard.MaxHeight=originalMaxHeight;dashboard.Width=width;dashboard.Height=height;dashboard.UpdateLayout();}
+    }
     private static void CheckResetPresentation(DockController controller,Dashboard dashboard,List<string> report)
     {
         var baseline=controller.Accounts.ToArray();var now=DateTimeOffset.Parse("2026-09-06T10:00:00Z");
